@@ -1,0 +1,35 @@
+<div [@emptyFilled]="currentState" class="container d-flex justify-content-center align-items-center">
+  <div  class="search-container bordered p-2">
+    <input
+
+      class="search text-center p-0"
+      [formControl]="queryField"
+      type="text"
+      id="keyword"
+      placeholder="search for artists..."
+      autofocus/>
+    <i class="fa fa-search font-grey"></i>
+  </div>
+
+</div>
+<ng-container *ngIf="artistsList && artistsList.length > 0"></ng-container>
+<div class="artists-container row p-3">
+  <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let artist of artistsList">
+    <app-card class="selectable">
+      <a (click)="getArtistAlbums(artist.id, artist.name)">
+        <img [src]="artist.imageUrl" [style.max-height]="'300px'" [style.object-fit]="'cover'"/>
+        <div class="p-3">
+          <span>{{artist.name}}</span>
+          <br>
+          <small class="font-grey">{{artist.followers}} followers</small>
+          <div class="mt-5">
+            <ng-container *ngFor="let star of artist.stars | fill">
+              <i class="fa fa-star"></i>
+            </ng-container>
+          </div>
+        </div>
+      </a>
+    </app-card>
+  </div>
+</div>
+

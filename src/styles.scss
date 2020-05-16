@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+@import "src/assets/styles/variables";
+html, body { height: 100%!important; }
+body { color: $general-font-color; margin: 0; font-family: "Nunito Sans",  Roboto, "Helvetica Neue", sans-serif; }
+a{
+  color: $general-font-color;
+  &:hover{
+    color: $general-font-color;
+    text-decoration: none;
+  }
+}
+.font-grey{
+  color: $grey;
+}
+.bordered{
+  border: 1.5px solid $grey;
+  border-radius: $general-border-radius;
+}
+.selectable{
+  cursor: pointer;
+}

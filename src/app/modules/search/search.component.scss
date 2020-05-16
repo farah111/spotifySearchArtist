@@ -1,0 +1,31 @@
+@import "src/assets/styles/variables";
+.search-container {
+  position: relative;
+  &.fa-search {
+    position: absolute;
+    padding: 10px;
+    pointer-events: none;
+  }
+  .search{
+    border: none;
+    width: 600px;
+    &:focus{
+      outline:0!important;
+      -webkit-appearance:none;
+      box-shadow: none !important;
+    }
+  }
+  .fa-search{
+    left:  0;
+  }
+}
+.fa-star{
+  font-size: 1.75rem;
+}
+
+@media only screen and (max-width: 920px)  {
+  .search{
+    max-width: 200px;
+  }
+}
+
