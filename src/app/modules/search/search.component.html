@@ -13,7 +13,7 @@
 
 </div>
 <ng-container *ngIf="artistsList && artistsList.length > 0"></ng-container>
-<div class="artists-container row p-3">
+<div class="artists-container row m-0 p-3">
   <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let artist of artistsList">
     <app-card class="selectable">
       <a (click)="getArtistAlbums(artist.id, artist.name)">
@@ -33,12 +33,13 @@
       </a>
     </app-card>
   </div>
-  <app-paginator
-    class="w-100"
-    [nextPageToken]="nextPageToken"
-    [previousPageToken]="previousPageToken"
-    (token)="getPageWithToken($event)">
+  <div class="w-100 d-flex justify-content-center">
+    <app-paginator
+      [nextPageToken]="nextPageToken"
+      [previousPageToken]="previousPageToken"
+      (token)="getPageWithToken($event)">
+    </app-paginator>
+  </div>
 
-  </app-paginator>
 </div>
 
