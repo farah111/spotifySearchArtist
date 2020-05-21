@@ -30,6 +30,12 @@ export class SearchComponent implements OnInit {
     private authService: AuthService) { }
 
   ngOnInit() {
+    this.setAccessToken();
+    this.handlePageTokens();
+    this.searchArtist();
+  }
+
+  setAccessToken() {
     if (this.router.url.split('#')[1]) {
       this.accessToken = this.router.url.match(new RegExp('access_token=' + '(.*)' + '&token_type'))[1];
       this.authService.setcurrentToken(this.accessToken);
@@ -37,16 +43,20 @@ export class SearchComponent implements OnInit {
       this.authService.logout();
       this.router.navigate(['/login']);
     }
+  }
+
+  handlePageTokens() {
+    this.searchService.nextPageToken.next(null);
+    this.searchService.previousPageToken.next(null);
     this.searchService.$nextPageToken.subscribe(token => {
       this.nextPageToken = token;
     });
     this.searchService.$previousPageToken.subscribe(token => {
       this.previousPageToken = token;
     });
-    this.searchArtist();
   }
 
-  searchArtist(nextPageToken?) {
+  searchArtist() {
     this.queryField.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(queryField => {

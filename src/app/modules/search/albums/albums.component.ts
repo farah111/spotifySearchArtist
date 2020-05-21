@@ -22,21 +22,22 @@ export class AlbumsComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    if (!localStorage.getItem('artistName')) {
-      this.searchService.$artistName.subscribe(artistName => {
-        this.artistName = artistName;
-        localStorage.setItem('artistName', artistName);
-      });
-    } else {
-      this.artistName = localStorage.getItem('artistName');
-    }
+    this.searchService.$artistName.subscribe(artistName => {
+      this.artistName = artistName;
+      localStorage.setItem('artistName', artistName);
+      this.artistName = artistName;
+    });
+    this.handlePageTokens();
+    this.getArtistAlbums();
+  }
+
+  handlePageTokens() {
     this.searchService.$nextPageAlbumToken.subscribe(token => {
       this.nextPageToken = token;
     });
     this.searchService.$previousPageAlbumToken.subscribe(token => {
       this.previousPageToken = token;
     });
-    this.getArtistAlbums();
   }
 
   getArtistAlbums() {
