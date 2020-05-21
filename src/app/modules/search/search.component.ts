@@ -8,6 +8,7 @@ import {AuthService} from '../../core/services/auth.service';
 import {FormControl} from '@angular/forms';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {emptyFilled} from './search-annimation';
+import {getNextToLastParentNode} from 'codelyzer/util/utils';
 
 @Component({
   selector: 'app-posts',
@@ -20,6 +21,8 @@ export class SearchComponent implements OnInit {
   accessToken;
   queryField: FormControl = new FormControl();
   artistsList: Artist[];
+  nextPageToken;
+  previousPageToken;
   constructor(
     private toastr: ToastrService,
     private searchService: SearchService,
@@ -34,10 +37,16 @@ export class SearchComponent implements OnInit {
       this.authService.logout();
       this.router.navigate(['/login']);
     }
+    this.searchService.$nextPageToken.subscribe(token => {
+      this.nextPageToken = token;
+    });
+    this.searchService.$previousPageToken.subscribe(token => {
+      this.previousPageToken = token;
+    });
     this.searchArtist();
   }
 
-  searchArtist() {
+  searchArtist(nextPageToken?) {
     this.queryField.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(queryField => {
@@ -51,6 +60,16 @@ export class SearchComponent implements OnInit {
                 this.toastr.error(error, 'Error');
               });
         }
+      });
+  }
+
+  getPageWithToken(token) {
+    this.searchService.getArtistsWithToken(token === 'next' ? this.nextPageToken : this.previousPageToken).subscribe(artists => {
+      this.artistsList = artists;
+      window.scrollTo(0, 0);
+      },
+      error => {
+        this.toastr.error(error, 'Error');
       });
   }
 

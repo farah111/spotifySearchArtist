@@ -16,6 +16,9 @@ a{
   border: 1.5px solid $grey;
   border-radius: $general-border-radius;
 }
+.cornered{
+  border-radius: $general-border-radius;
+}
 .selectable{
   cursor: pointer;
 }

@@ -13,6 +13,8 @@ export class AlbumsComponent implements OnInit {
   artistId;
   artistName;
   albumsList: Album [];
+  nextPageToken;
+  previousPageToken;
   constructor(
     private toastr: ToastrService,
     private route: ActivatedRoute,
@@ -28,7 +30,12 @@ export class AlbumsComponent implements OnInit {
     } else {
       this.artistName = localStorage.getItem('artistName');
     }
-
+    this.searchService.$nextPageAlbumToken.subscribe(token => {
+      this.nextPageToken = token;
+    });
+    this.searchService.$previousPageAlbumToken.subscribe(token => {
+      this.previousPageToken = token;
+    });
     this.getArtistAlbums();
   }
 
@@ -44,6 +51,14 @@ export class AlbumsComponent implements OnInit {
         this.albumsList = albums;
       }, error => this.toastr.error(error, 'Error'));
     });
+  }
+
+  getAlbumsWithToken(token){
+    this.searchService.getAlbumsWithToken(token === 'next' ? this.nextPageToken : this.previousPageToken).subscribe(
+      albums => {
+        this.albumsList = albums;
+      }, error => this.toastr.error(error, 'Error')
+    )
   }
 
 }
