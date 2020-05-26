@@ -9,8 +9,6 @@ import {Album} from '../models/album.model';
 @Injectable()
 export class SearchService {
   accessToken;
-  artistNameSubject = new ReplaySubject<string>();
-  $artistName = this.artistNameSubject.asObservable();
   nextPageToken = new BehaviorSubject<any>('');
   $nextPageToken = this.nextPageToken.asObservable();
   previousPageToken = new BehaviorSubject<any>('');

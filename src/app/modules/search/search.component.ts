@@ -9,6 +9,7 @@ import {FormControl} from '@angular/forms';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {emptyFilled} from './search-annimation';
 import {getNextToLastParentNode} from 'codelyzer/util/utils';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-posts',
@@ -27,18 +28,33 @@ export class SearchComponent implements OnInit {
     private toastr: ToastrService,
     private searchService: SearchService,
     private router: Router,
-    private authService: AuthService) { }
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private titleService: Title) { }
 
   ngOnInit() {
     this.setAccessToken();
+    this.searchQueryCheck();
     this.handlePageTokens();
     this.searchArtist();
+    this.titleService.setTitle( 'Artist Search' );
+  }
+
+  searchQueryCheck() {
+    this.route.queryParams.subscribe(params => {
+      if (!params.artist) {
+        return;
+      }
+      this.queryField.patchValue(params.artist);
+      this.getArtists(params.artist);
+    });
   }
 
   setAccessToken() {
     if (this.router.url.split('#')[1]) {
       this.accessToken = this.router.url.match(new RegExp('access_token=' + '(.*)' + '&token_type'))[1];
       this.authService.setcurrentToken(this.accessToken);
+      this.router.navigate(['']);
     } else if (localStorage.getItem('accessToken') === 'undefined' || !localStorage.getItem('accessToken')) {
       this.authService.logout();
       this.router.navigate(['/login']);
@@ -59,17 +75,22 @@ export class SearchComponent implements OnInit {
   searchArtist() {
     this.queryField.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
-      .subscribe(queryField => {
-        if (queryField) {
-          this.currentState = 'filled';
-          this.searchService.getArtists(queryField).subscribe(
-            artists => {
-              this.artistsList = artists;
-            },
-              error => {
-                this.toastr.error(error, 'Error');
-              });
+      .subscribe(searchTerm => {
+        if (searchTerm) {
+          this.router.navigate([''], {queryParams: {artist: searchTerm}});
+          this.getArtists(searchTerm);
         }
+      });
+  }
+
+  getArtists(searchTerm) {
+    this.searchService.getArtists(searchTerm).subscribe(
+      artists => {
+        this.artistsList = artists;
+        this.currentState = 'filled';
+      },
+      error => {
+        this.toastr.error(error, 'Error');
       });
   }
 
@@ -84,8 +105,9 @@ export class SearchComponent implements OnInit {
   }
 
   getArtistAlbums(artistId, artistName) {
-    this.searchService.artistNameSubject.next(artistName);
+    localStorage.setItem('artistName', artistName);
     this.router.navigate(['albums', artistId]);
+    this.titleService.setTitle( artistName );
   }
 
 }

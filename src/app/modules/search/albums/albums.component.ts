@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {SearchService} from '../../../core/services/search.service';
 import {ToastrService} from 'ngx-toastr';
 import {Album} from '../../../core/models/album.model';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-albums',
@@ -19,14 +20,11 @@ export class AlbumsComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private searchService: SearchService,
+    private titleService: Title,
     private router: Router) { }
 
   ngOnInit() {
-    this.searchService.$artistName.subscribe(artistName => {
-      this.artistName = artistName;
-      localStorage.setItem('artistName', artistName);
-      this.artistName = artistName;
-    });
+    this.artistName = localStorage.getItem('artistName');
     this.handlePageTokens();
     this.getArtistAlbums();
   }
